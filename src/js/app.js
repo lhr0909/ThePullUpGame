@@ -1,5 +1,4 @@
 var PIXI = require('pixi.js');
-var Box2D = require('./vendor/box2d.js');
 
 var viewportWidth = window.innerWidth;
 var viewportHeight = window.innerHeight;
@@ -22,6 +21,7 @@ var stage = new PIXI.Container();
 var interactionManager = renderer.plugins.interaction;
 
 var basicText = new PIXI.Text('Basic text in pixi', {
+    font: "50px Helvetica",
     stroke: "#4a1850"
 });
 basicText.x = 30;
@@ -34,12 +34,13 @@ var textOnClick =  function(e) {
     basicText.text = "You have clicked " + (++counter) + " times.";
 };
 
-basicText.on('mousedown', textOnClick)
-         .on('touchstart', textOnClick);
+basicText.on('click', textOnClick)
+         .on('tap', textOnClick);
 
 stage.addChild(basicText);
 
 // add the renderer view element to the DOM
+document.body.removeChild(document.getElementById("loading"));
 document.body.appendChild(renderer.view);
 
 ticker.add(function(time) {
