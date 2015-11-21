@@ -24,11 +24,6 @@ gulp.task('copy-js-src', function() {
             .pipe(gulp.dest('./build'));
 });
 
-gulp.task('copy-vendor-js', function() {
-    return gulp.src('./src/js/vendor/**/*.js')
-            .pipe(gulp.dest('./dist/js/vendor'));
-})
-
 gulp.task('copy-html-src', function() {
     return gulp.src('./src/**/*.html')
             .pipe(gulp.dest('./dist'));
@@ -46,7 +41,7 @@ gulp.task('build-sass', function() {
 /**
  * js build task, jshints + browserifies + uglifies it and stuff
  */
-gulp.task('build-js', ['copy-js-src', 'copy-vendor-js'], function() {
+gulp.task('build-js', ['copy-js-src'], function() {
     var build = gulp.src('./build/app.js')
             .pipe(jshint())
             .pipe(jshint.reporter(stylish))

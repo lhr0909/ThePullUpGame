@@ -1,4 +1,5 @@
 var PIXI = require('pixi.js');
+var Box2D = require('./vendor/box2d.js');
 
 var viewportWidth = window.innerWidth;
 var viewportHeight = window.innerHeight;
