@@ -1,3 +1,4 @@
+var _ = require('underscore');
 
 /**
  * [add_DeviceOrientation_listenerTo description]
@@ -29,10 +30,10 @@ var add_DeviceOrientation_listenerTo = function(DOM_document, debounceWait) {
     var db_calcVector = _.debounce(calcVector, debounceWait);
     
     return {
-        getCurrentVector : db_calcVector;
+        getCurrentVector : db_calcVector
     };
 
-    calcVector = function() {
+    function calcVector() {
         var gammaAvg =  _window.reduce(function(prevVal, currentVal, currentIdx, arr) {
             return prevVal + currentVal.gamma;
         }, 0) / _window.length;
@@ -50,7 +51,7 @@ var add_DeviceOrientation_listenerTo = function(DOM_document, debounceWait) {
         return _currentVector;
     };
 
-    addReading = function(reading) {
+    function addReading(reading) {
         if (_window.length > 5) {
             _window.shift();
         } 
@@ -59,3 +60,6 @@ var add_DeviceOrientation_listenerTo = function(DOM_document, debounceWait) {
 
 
 }
+
+
+module.exports = add_DeviceOrientation_listenerTo;
