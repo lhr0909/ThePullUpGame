@@ -28,7 +28,7 @@ var add_DeviceOrientation_listenerTo = function(DOM_document, debounceWait) {
         }, true);
     };
     var db_calcVector = _.debounce(calcVector, debounceWait);
-    
+
     return {
         getCurrentVector : db_calcVector
     };
@@ -47,19 +47,16 @@ var add_DeviceOrientation_listenerTo = function(DOM_document, debounceWait) {
         if (Math.abs(_currentVector.y) > 1) {
             _currentVector.y = (_currentVector.y < 1) ? -1 : 1;
         };
-
+        _currentVector.y = parseFloat(currentVector.y);
         return _currentVector;
     };
 
     function addReading(reading) {
         if (_window.length > 5) {
             _window.shift();
-        } 
+        }
         _window.push(reading);
     };
-
-
 }
-
 
 module.exports = add_DeviceOrientation_listenerTo;

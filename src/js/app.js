@@ -1,4 +1,7 @@
 var PIXI = require('pixi.js');
+var deviceOrientation = require('./listener.js');
+
+deviceOrientation(window, 25);
 
 var viewportWidth = window.innerWidth;
 var viewportHeight = window.innerHeight;
@@ -70,7 +73,7 @@ document.body.appendChild(renderer.view);
 
 ticker.add(function(time) {
     // console.log(time);
-    moveCircle({x: 0, y: 0.5}, circle, time);
+    moveCircle(deviceOrientation.getCurrentVector(), circle, time);
     renderer.render(stage);
     // console.log(renderer.plugins.interaction.mouse.global.x + ", " + renderer.plugins.interaction.mouse.global.y);
 });
