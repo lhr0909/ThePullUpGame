@@ -1,7 +1,7 @@
 var PIXI = require('pixi.js');
-var deviceOrientation = require('./listener.js');
+var setUpDeviceOrientationListener = require('./listener.js');
 
-deviceOrientation(window, 25);
+var listener = setUpDeviceOrientationListener(window, 25);
 
 var viewportWidth = window.innerWidth;
 var viewportHeight = window.innerHeight;
@@ -33,7 +33,7 @@ var circlePos = {
 
 var circleV = {
     x: 0,
-    y: -10
+    y: 0
 };
 
 var debugText = new PIXI.Text(circlePos.x + ", " + circlePos.y);
@@ -42,6 +42,14 @@ debugText.y = 50;
 stage.addChild(debugText);
 
 function moveCircle(accel, circle, time) {
+    if (!accel.x) {
+        accel.x = 0;
+    }
+
+    if (!accel.y) {
+        accel.y = 0;
+    }
+
     var newV = {
         x: circleV.x + accel.x * time,
         y: circleV.y + accel.y * time
@@ -59,10 +67,10 @@ function moveCircle(accel, circle, time) {
     circle.clear();
     circle.lineStyle(0);
     circle.beginFill(0xff0000, 0.5);
-    circle.drawCircle(circlePos.x, circlePos.y, 10);
+    circle.drawCircle(circlePos.x, circlePos.y, 30);
     circle.endFill();
 
-    debugText.text = circlePos.x + ", " + circlePos.y;
+    debugText.text = accel.x + ", " + accel.y;
 
     // console.log(circlePos);
 }
@@ -73,7 +81,7 @@ document.body.appendChild(renderer.view);
 
 ticker.add(function(time) {
     // console.log(time);
-    moveCircle(deviceOrientation.getCurrentVector(), circle, time);
+    moveCircle(listener.getCurrentVector(), circle, time);
     renderer.render(stage);
     // console.log(renderer.plugins.interaction.mouse.global.x + ", " + renderer.plugins.interaction.mouse.global.y);
 });

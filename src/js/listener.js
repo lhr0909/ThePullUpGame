@@ -9,8 +9,8 @@ var add_DeviceOrientation_listenerTo = function(DOM_document, debounceWait) {
     DOM_document = DOM_document || window;
     debounceWait = debounceWait || 250;
     var _currentVector = {
-        x: null,
-        y: null
+        x: 0,
+        y: 0
     };
     var _window = [];
 
@@ -30,7 +30,7 @@ var add_DeviceOrientation_listenerTo = function(DOM_document, debounceWait) {
     var db_calcVector = _.debounce(calcVector, debounceWait);
 
     return {
-        getCurrentVector : db_calcVector
+        getCurrentVector : calcVector
     };
 
     function calcVector() {
@@ -41,13 +41,12 @@ var add_DeviceOrientation_listenerTo = function(DOM_document, debounceWait) {
             return prevVal + currentVal.beta;
         }, 0) / _window.length;
         //gamma X
-        _currentVector.x = parseFloat(gammaAvg / 90);
+        _currentVector.x = gammaAvg / 90;
         //Beta y
         _currentVector.y = (betaAvg / 90);
         if (Math.abs(_currentVector.y) > 1) {
             _currentVector.y = (_currentVector.y < 1) ? -1 : 1;
         };
-        _currentVector.y = parseFloat(currentVector.y);
         return _currentVector;
     };
 
