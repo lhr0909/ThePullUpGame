@@ -84,7 +84,7 @@ function moveCircle(accel, circle, time) {
     circle.endFill();
 
     if (circlePos.x > viewportWidth || circlePos.x < 0 || circlePos.y > viewportHeight || circlePos.y < 0) {
-        timerText.text += " Game over! Tap here to restart!";
+        timerText.text += " Game over!";
         ticker.stop();
     }
     // console.log(circlePos);
