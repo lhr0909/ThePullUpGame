@@ -30,7 +30,7 @@ mainGameScreen.addChild(worldObjectsRenderer);
 
 var timerText = new PIXI.Text(0, {
     font: "20px Helvetica",
-    fill: 0xbf2317
+    fill: 0x00ff00
 });
 timerText.x = 50;
 timerText.y = 50;

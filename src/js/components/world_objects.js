@@ -1,5 +1,5 @@
 var worldObjects = function(viewportWidth, viewportHeight, pixiGraphics) {
-    this.friction = 0.03;
+    this.friction = 0.025;
     this.mainObjectSize = 30;
     this.bulletSize = 5;
 
