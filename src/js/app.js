@@ -1,105 +1,69 @@
 var PIXI = require('pixi.js');
-var setUpDeviceOrientationListener = require('./listener.js');
+var setUpDeviceOrientationListener = require('./components/device_orientation_listener.js');
+var WorldObjects = require('./components/world_objects.js');
+var Timer = require('./components/timer.js');
 
 var listener = setUpDeviceOrientationListener(window, 25);
 
 var viewportWidth = window.innerWidth;
 var viewportHeight = window.innerHeight;
 
-console.log({
-    width: viewportWidth,
-    height: viewportHeight
-});
-
-var ticker = PIXI.ticker.shared;
-ticker.autoStart = false;
-ticker.stop();
-
 // create a renderer instance.
 var renderer = PIXI.autoDetectRenderer(viewportWidth, viewportHeight, {
-    backgroundColor: 0x1099bb
+    backgroundColor: 0x1e3395
 });
 
-var stage = new PIXI.Container();
+var timer;
+var worldObjects;
+var gameStarted = false;
 
-var circle = new PIXI.Graphics();
-
-stage.addChild(circle);
-
-var circlePos = {
-    x: viewportWidth / 2,
-    y: viewportHeight / 2
+var initGame = function(e) {
+    worldObjects = new WorldObjects(viewportWidth, viewportHeight, worldObjectsRenderer);
+    timer = new Timer();
+    timerText.interactive = false;
+    gameStarted = true;
 };
 
-var circleV = {
-    x: 0,
-    y: 0
-};
+var mainGameScreen = new PIXI.Container();
+var worldObjectsRenderer = new PIXI.Graphics();
+mainGameScreen.addChild(worldObjectsRenderer);
 
-var startTime = Date.now();
-
-var timerText = new PIXI.Text(0);
+var timerText = new PIXI.Text(0, {
+    font: "20px Helvetica",
+    fill: 0xbf2317
+});
 timerText.x = 50;
 timerText.y = 50;
-stage.addChild(timerText);
-
-function updateTime() {
-    timerText.text = (Date.now() - startTime) / 1000;
-}
-
-function moveCircle(accel, circle, time) {
-    if (!accel.x) {
-        accel.x = 0;
-    }
-
-    if (!accel.y) {
-        accel.y = 0;
-    }
-
-    var friction = 0.01;
-
-    var friction_accel = {
-        x: -friction * circleV.x,
-        y: -friction * circleV.y
-    };
-
-    var newV = {
-        x: circleV.x + (accel.x + friction_accel.x) * time,
-        y: circleV.y + (accel.y + friction_accel.y) * time
-    };
-
-    circleV = newV;
-
-    var newPos = {
-        x: circlePos.x + circleV.x * time,
-        y: circlePos.y + circleV.y * time
-    };
-
-    circlePos = newPos;
-
-    circle.clear();
-    circle.lineStyle(0);
-    circle.beginFill(0xff0000, 0.5);
-    circle.drawCircle(circlePos.x, circlePos.y, 30);
-    circle.endFill();
-
-    if (circlePos.x > viewportWidth || circlePos.x < 0 || circlePos.y > viewportHeight || circlePos.y < 0) {
-        timerText.text += " Game over!";
-        ticker.stop();
-    }
-    // console.log(circlePos);
-}
+timerText.interactive = false;
+mainGameScreen.addChild(timerText);
 
 // add the renderer view element to the DOM
 document.body.removeChild(document.getElementById("loading"));
 document.body.appendChild(renderer.view);
 
-ticker.add(function(time) {
-    // console.log(time);
-    updateTime();
-    moveCircle(listener.getCurrentVector(), circle, time);
-    renderer.render(stage);
+var ticker = PIXI.ticker.shared;
+ticker.autoStart = false;
+ticker.stop();
+
+ticker.add(function(timeStep) {
+    if (gameStarted) {
+        timer.updateTime(function(timerTime) {
+            timerText.text = timerTime;
+            timerText.interactive = false;
+        });
+
+        worldObjects.step(listener.getCurrentVector(), timeStep, function() {
+            timerText.text += " Game Over, tap here to restart";
+            timerText.interactive = true;
+            timerText.on("click", initGame).on("tap", initGame);
+            gameStarted = false;
+        });
+        worldObjects.render();
+    }
+
+    renderer.render(mainGameScreen);
     // console.log(renderer.plugins.interaction.mouse.global.x + ", " + renderer.plugins.interaction.mouse.global.y);
 });
 
+initGame();
 ticker.start();
